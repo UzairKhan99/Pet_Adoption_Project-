@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react'
 
 export default function SignUp() {
-  const API_BASE = import.meta?.env?.VITE_API_URL || 'http://127.0.0.1:8000'
+  const API_BASE = import.meta?.env?.VITE_API_URL || ''
   const [formData, setFormData] = useState({
     username: '',
     name: '',
