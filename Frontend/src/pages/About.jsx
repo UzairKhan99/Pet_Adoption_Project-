@@ -6,7 +6,7 @@ export default function About() {
       id: 1,
       name: 'Sarah Johnson',
       role: 'Founder & CEO',
-      image: '/professional-woman.png',
+      image: '/professional-woman-smiling.png',
     },
     {
       id: 2,
@@ -18,7 +18,7 @@ export default function About() {
       id: 3,
       name: 'Emma Davis',
       role: 'Animal Care Specialist',
-      image: '/professional-woman.png',
+      image: '/professional-woman-diverse.png',
     },
   ]
 
