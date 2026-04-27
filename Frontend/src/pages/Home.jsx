@@ -1,205 +1,274 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, Heart, Users, Award } from 'lucide-react'
+import { ArrowRight, Award, Heart, HeartHandshake, MapPin, PawPrint, Sparkles, Users } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
-// Load a small sample of available pets from backend `/api/pets/` (user view)
-// Shows first 4 pets on the Home page.
+const fallbackShelters = [
+  { id: 'demo-1', Name: 'Safe Paws Shelter', Location: 'Lahore', Contact: '+92 300 1234567' },
+  { id: 'demo-2', Name: 'Happy Tails Rescue', Location: 'Islamabad', Contact: '+92 301 5556677' },
+  { id: 'demo-3', Name: 'Second Chance Home', Location: 'Karachi', Contact: '+92 321 7788990' },
+  { id: 'demo-4', Name: 'Kind Hearts Animal Care', Location: 'Rawalpindi', Contact: '+92 333 1122334' },
+]
+
+const featuredPets = [
+  { name: 'Buddy', type: 'Golden Retriever', image: '/golden-retriever.jpg' },
+  { name: 'Luna', type: 'Calico Cat', image: '/calico-cat.jpg' },
+  { name: 'Max', type: 'Beagle', image: '/beagle-dog.jpg' },
+]
+
+const benefits = [
+  {
+    icon: Heart,
+    title: 'Save a Life',
+    description: 'Give a pet safety, comfort, and the kind of everyday love they have been waiting for.',
+  },
+  {
+    icon: Users,
+    title: 'Family Joy',
+    description: 'Find companions matched for real homes, real routines, and real personalities.',
+  },
+  {
+    icon: Award,
+    title: 'Guided Support',
+    description: 'Get clear adoption steps, shelter details, and support from first browse to welcome home.',
+  },
+]
 
 export default function Home() {
-  // Load shelters from backend user endpoint `/api/shelters/` and display them on Home
   const [shelters, setShelters] = useState([])
   const [loadingShelters, setLoadingShelters] = useState(false)
-  const [sheltersError, setSheltersError] = useState(null)
+  const [selectedShelter, setSelectedShelter] = useState(null)
 
-  // Prefer explicit VITE_API_URL when set; otherwise use relative paths so dev proxy can forward requests
   const API_BASE = import.meta.env.VITE_API_URL ?? ''
   const shouldUseCredentials = (() => {
     try {
       const envFlag = String(import.meta.env?.VITE_USE_CREDENTIALS || '').toLowerCase() === 'true'
       if (envFlag) return true
-      if (typeof window !== 'undefined') {
+      if (typeof window !== 'undefined' && API_BASE) {
         const apiOrigin = new URL(API_BASE).origin
         return apiOrigin === window.location.origin
       }
-    } catch (_) {}
+    } catch {
+      return false
+    }
     return false
   })()
 
   useEffect(() => {
     let mounted = true
+
     const loadShelters = async () => {
       setLoadingShelters(true)
-      setSheltersError(null)
       try {
         const token = localStorage.getItem('access')
-        const headers = token ? { Authorization: `Bearer ${token}` } : {}
-        const opts = { headers }
+        const opts = { headers: token ? { Authorization: `Bearer ${token}` } : {} }
         if (shouldUseCredentials) opts.credentials = 'include'
+
         const res = await fetch(`${API_BASE}/api/shelters/`, opts)
-        if (!res.ok) {
-          const text = await res.text().catch(() => '')
-          throw new Error(`Error ${res.status}: ${text || res.statusText}`)
+        const contentType = res.headers.get('content-type') || ''
+        if (!res.ok || !contentType.includes('application/json')) {
+          throw new Error('Shelters unavailable')
         }
+
         const data = await res.json()
         const items = Array.isArray(data) ? data : data.results || []
         if (mounted) setShelters(items.slice(0, 4))
-      } catch (err) {
-        if (mounted) setSheltersError(err.message || 'Failed to load shelters')
+      } catch {
+        if (mounted) setShelters(fallbackShelters)
       } finally {
         if (mounted) setLoadingShelters(false)
       }
     }
+
     loadShelters()
     return () => {
       mounted = false
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const [selectedShelter, setSelectedShelter] = useState(null)
   const handleShelterBackdrop = (e) => {
     if (e.target === e.currentTarget) setSelectedShelter(null)
   }
 
-  const benefits = [
-    {
-      icon: <Heart size={32} className="text-amber-600" />,
-      title: 'Save a Life',
-      description: 'Give a loving home to a pet in need and make a difference',
-    },
-    {
-      icon: <Users size={32} className="text-amber-600" />,
-      title: 'Family Joy',
-      description: 'Bring happiness and companionship to your home',
-    },
-    {
-      icon: <Award size={32} className="text-amber-600" />,
-      title: 'Full Support',
-      description: 'We provide guidance and support throughout the adoption process',
-    },
-  ]
-
   return (
-    <div className="w-full">
-      <section className="bg-gradient-to-r from-amber-50 to-orange-50 py-16 md:py-24">
-        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div>
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-              Find Your Perfect Pet
+    <main className="w-full overflow-hidden bg-background">
+      <section className="relative min-h-[calc(100vh-4rem)] bg-stone-950 text-white">
+        <img
+          src="/happy-family-with-pets.jpg"
+          alt="Happy family with adopted pets"
+          className="absolute inset-0 h-full w-full object-cover opacity-70"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-stone-950 via-stone-950/70 to-stone-950/10" />
+        <div className="relative mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-10 px-4 py-16 md:grid-cols-[1.05fr_0.95fr]">
+          <div className="max-w-2xl">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold backdrop-blur">
+              <Sparkles size={16} className="text-amber-300" />
+              Adoption made warmer, clearer, and faster
+            </div>
+            <h1 className="mb-6 text-5xl font-black leading-[0.95] md:text-7xl">
+              Find the pet that feels like home.
             </h1>
-            <p className="text-xl text-gray-600 mb-8">
-              Discover loving pets waiting for their forever homes. Start your journey with PawPal today!
+            <p className="mb-8 max-w-xl text-lg leading-8 text-stone-100 md:text-xl">
+              Browse loving pets, discover nearby shelters, and start an adoption journey that feels simple from the first click.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/available-pets" className="bg-amber-600 text-white px-8 py-3 rounded-lg hover:bg-amber-700 transition flex items-center justify-center gap-2">
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link
+                to="/available-pets"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-amber-500 px-7 py-4 font-bold text-stone-950 shadow-xl shadow-amber-500/20 transition hover:bg-amber-400"
+              >
                 Browse Pets <ArrowRight size={20} />
               </Link>
-              <Link to="/how-to-adopt" className="bg-white text-amber-600 border-2 border-amber-600 px-8 py-3 rounded-lg hover:bg-amber-50 transition flex items-center justify-center">
-                Learn More
+              <Link
+                to="/how-to-adopt"
+                className="inline-flex items-center justify-center rounded-full border border-white/30 bg-white/10 px-7 py-4 font-bold text-white backdrop-blur transition hover:bg-white/20"
+              >
+                How Adoption Works
               </Link>
             </div>
           </div>
+
           <div className="hidden md:block">
-            <img src="/happy-family-with-pets.jpg" alt="Happy family with pets" className="w-full rounded-lg shadow-lg" />
+            <div className="ml-auto max-w-md rounded-[2rem] border border-white/20 bg-white/15 p-4 shadow-2xl backdrop-blur-md">
+              <div className="grid gap-4">
+                {featuredPets.map((pet) => (
+                  <Link
+                    to="/available-pets"
+                    key={pet.name}
+                    className="group grid grid-cols-[6rem_1fr_auto] items-center gap-4 rounded-3xl bg-white p-3 text-stone-900 shadow-lg transition hover:-translate-y-1 hover:shadow-2xl"
+                  >
+                    <img src={pet.image} alt={pet.name} className="h-24 w-24 rounded-2xl object-cover" />
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-widest text-amber-700">Featured</p>
+                      <h3 className="text-2xl font-black">{pet.name}</h3>
+                      <p className="text-sm text-stone-500">{pet.type}</p>
+                    </div>
+                    <ArrowRight className="text-amber-600 transition group-hover:translate-x-1" />
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Shelters</h2>
-            <p className="text-xl text-gray-600">Browse shelters near you</p>
+      <section className="-mt-10 relative z-10 px-4">
+        <div className="mx-auto grid max-w-6xl gap-4 rounded-3xl bg-white p-5 shadow-soft md:grid-cols-3">
+          {[
+            ['5,000+', 'pets helped'],
+            ['50+', 'partner shelters'],
+            ['24/7', 'adoption tracking'],
+          ].map(([number, label]) => (
+            <div key={label} className="rounded-2xl bg-amber-50 px-6 py-5 text-center">
+              <p className="text-3xl font-black text-primary">{number}</p>
+              <p className="font-semibold text-stone-600">{label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="bg-white py-20">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="mb-2 inline-flex items-center gap-2 rounded-full bg-teal-50 px-3 py-1 text-sm font-bold text-teal-700">
+                <MapPin size={16} /> Nearby partners
+              </p>
+              <h2 className="text-4xl font-black text-stone-950 md:text-5xl">Shelters with open hearts</h2>
+            </div>
+            <Link to="/available-pets" className="inline-flex items-center gap-2 font-bold text-primary hover:text-amber-700">
+              View pets <ArrowRight size={18} />
+            </Link>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {loadingShelters ? (
-              <div className="col-span-full text-center p-12 bg-white rounded-lg">Loading shelters…</div>
-            ) : sheltersError ? (
-              <div className="col-span-full text-center p-8 bg-white rounded-lg">
-                <p className="text-red-600 font-semibold mb-2">Could not load shelters: {sheltersError}</p>
-                <Link to="/available-pets" className="text-amber-600 underline">View all pets</Link>
-              </div>
+              <div className="col-span-full rounded-3xl bg-stone-50 p-12 text-center font-semibold text-stone-500">Loading shelters...</div>
             ) : (
-              shelters.map((s) => (
-                <div key={s.id} className="bg-white rounded-lg shadow-md hover:shadow-lg transition overflow-hidden cursor-pointer" onClick={() => setSelectedShelter(s)}>
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-1">{s.Name || s.name || `Shelter ${s.id}`}</h3>
-                    <p className="text-amber-600 font-semibold mb-1">{s.Location || s.location || 'Unknown location'}</p>
-                    <p className="text-gray-600 mb-4">Contact: {s.Contact || s.contact || '-'}</p>
-                    <div className="w-full text-left">
-                      <span className="inline-block bg-amber-100 text-amber-800 px-3 py-1 rounded text-sm">View details</span>
-                    </div>
+              shelters.map((s, index) => (
+                <button
+                  key={s.id}
+                  onClick={() => setSelectedShelter(s)}
+                  className="group overflow-hidden rounded-3xl bg-white text-left shadow-md ring-1 ring-stone-200 transition hover:-translate-y-1 hover:shadow-2xl"
+                >
+                  <img
+                    src={index % 2 === 0 ? '/happy-family-with-dogs.jpg' : '/family-with-adopted-pets.jpg'}
+                    alt=""
+                    className="h-44 w-full object-cover transition duration-500 group-hover:scale-105"
+                  />
+                  <div className="p-5">
+                    <h3 className="mb-2 text-xl font-black text-stone-950">{s.Name || s.name || `Shelter ${s.id}`}</h3>
+                    <p className="mb-3 flex items-center gap-2 text-sm font-bold text-primary">
+                      <MapPin size={16} /> {s.Location || s.location || 'Unknown location'}
+                    </p>
+                    <span className="inline-flex rounded-full bg-amber-100 px-3 py-1 text-sm font-bold text-amber-800">
+                      View details
+                    </span>
                   </div>
-                </div>
+                </button>
               ))
             )}
-          </div>
-          <div className="text-center">
-            {/* Shelters are listed inline on the Home page — no separate list page */}
           </div>
         </div>
       </section>
 
       {selectedShelter && (
-        <div onClick={handleShelterBackdrop} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full overflow-hidden">
-            <div className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">{selectedShelter.Name || selectedShelter.name || `Shelter ${selectedShelter.id}`}</h2>
-                  <p className="text-amber-600 font-semibold">{selectedShelter.Location || selectedShelter.location || 'Unknown location'}</p>
-                </div>
-                <button onClick={() => setSelectedShelter(null)} className="text-gray-500 hover:text-gray-700">Close</button>
+        <div onClick={handleShelterBackdrop} className="fixed inset-0 z-50 flex items-center justify-center bg-stone-950/70 p-4 backdrop-blur-sm">
+          <div className="grid w-full max-w-3xl overflow-hidden rounded-3xl bg-white shadow-2xl md:grid-cols-[0.95fr_1.05fr]">
+            <img src="/happy-family-with-dogs.jpg" alt="" className="h-full min-h-72 w-full object-cover" />
+            <div className="p-7">
+              <p className="mb-2 text-sm font-bold uppercase tracking-widest text-primary">Shelter partner</p>
+              <h2 className="mb-2 text-3xl font-black text-stone-950">
+                {selectedShelter.Name || selectedShelter.name || `Shelter ${selectedShelter.id}`}
+              </h2>
+              <p className="mb-5 font-semibold text-stone-600">{selectedShelter.Location || selectedShelter.location || 'Unknown location'}</p>
+              <div className="space-y-3 rounded-2xl bg-stone-50 p-4 text-stone-700">
+                <p><strong>Contact:</strong> {selectedShelter.Contact || selectedShelter.contact || '-'}</p>
+                <p>{selectedShelter.Description || 'This shelter is ready to help you find a companion who matches your home and routine.'}</p>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <p className="text-gray-700 mb-4"><strong>Contact:</strong> {selectedShelter.Contact || selectedShelter.contact || '-'}</p>
-                  {selectedShelter.Description && <p className="text-gray-600 mb-4">{selectedShelter.Description}</p>}
-                </div>
-                <div>
-                  {/* Placeholder for image or map if available */}
-                  <div className="h-40 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">No image</div>
-                </div>
-              </div>
-
-              <div className="mt-6 flex gap-3">
-                <button onClick={() => setSelectedShelter(null)} className="px-4 py-2 bg-amber-600 text-white rounded">Close</button>
-                <Link to="/available-pets" className="px-4 py-2 border border-amber-600 text-amber-600 rounded">View Pets</Link>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link to="/available-pets" className="rounded-full bg-primary px-5 py-3 font-bold text-white hover:bg-amber-700">View Pets</Link>
+                <button onClick={() => setSelectedShelter(null)} className="rounded-full border border-stone-300 px-5 py-3 font-bold text-stone-700 hover:bg-stone-50">Close</button>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center text-gray-900 mb-12">Why Adopt?</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {benefits.map((benefit, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md p-8 text-center hover:shadow-lg transition">
-                <div className="flex justify-center mb-4">
-                  {benefit.icon}
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">{benefit.title}</h3>
-                <p className="text-gray-600">{benefit.description}</p>
-              </div>
-            ))}
+      <section className="bg-stone-50 py-20">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="mb-12 text-center">
+            <p className="mb-2 font-bold uppercase tracking-widest text-primary">Why PawPal</p>
+            <h2 className="text-4xl font-black text-stone-950 md:text-5xl">A better adoption experience</h2>
+          </div>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {benefits.map((benefit) => {
+              const Icon = benefit.icon
+              return (
+                <article key={benefit.title} className="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-stone-200 transition hover:-translate-y-1 hover:shadow-xl">
+                  <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 text-primary">
+                    <Icon size={28} />
+                  </div>
+                  <h3 className="mb-3 text-2xl font-black text-stone-950">{benefit.title}</h3>
+                  <p className="leading-7 text-stone-600">{benefit.description}</p>
+                </article>
+              )
+            })}
           </div>
         </div>
       </section>
 
-      <section className="bg-amber-600 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-4">Ready to Find Your Companion?</h2>
-          <p className="text-xl mb-8 opacity-90">
-            Our adoption process is simple and supportive. We're here to help every step of the way.
-          </p>
-          <Link to="/available-pets" className="inline-flex items-center gap-2 bg-white text-amber-600 px-8 py-3 rounded-lg hover:bg-gray-100 transition font-semibold">
-            Start Browsing <ArrowRight size={20} />
+      <section className="bg-primary py-16 text-white">
+        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="mb-3 inline-flex items-center gap-2 font-bold text-amber-100">
+              <HeartHandshake size={20} /> Ready when you are
+            </p>
+            <h2 className="text-4xl font-black md:text-5xl">Meet your next best friend.</h2>
+          </div>
+          <Link to="/available-pets" className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 font-black text-primary shadow-xl hover:bg-amber-50">
+            Start Browsing <PawPrint size={20} />
           </Link>
         </div>
       </section>
-    </div>
+    </main>
   )
 }
