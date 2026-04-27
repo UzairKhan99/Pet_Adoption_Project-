@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, PawPrint, X } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
@@ -26,49 +26,43 @@ export default function Navbar() {
   ];
 
   const adopterNav = user ? [...baseNav, { label: "My Adoptions", to: "/my-adoptions" }] : baseNav;
-
-  const adminNav = [{ label: "Admin", to: "/admin" }];
-
-  const navItems = isAdmin ? adminNav : adopterNav;
+  const navItems = isAdmin ? [{ label: "Admin", to: "/admin" }] : adopterNav;
 
   return (
-    <nav className="bg-primary shadow-lg sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-white/30 backdrop-blur-md">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 flex-shrink-0">
-            <div className="w-10 h-10 bg-primary-foreground rounded-full flex items-center justify-center">
-              <span className="text-2xl">🐾</span>
+    <nav className="sticky top-0 z-50 border-b border-amber-100 bg-white/90 shadow-sm backdrop-blur-md">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          <Link to="/" className="flex flex-shrink-0 items-center gap-2">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
+              <PawPrint size={22} />
             </div>
-            <span className="text-2xl font-bold text-primary-foreground">PawPal</span>
+            <span className="text-2xl font-bold text-primary">PawPal</span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden items-center space-x-8 md:flex">
             {navItems.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
-                className="text-primary-foreground hover:text-secondary font-medium transition-colors duration-200"
+                className="font-medium text-gray-700 transition-colors duration-200 hover:text-primary"
               >
                 {item.label}
               </Link>
             ))}
           </div>
 
-          {/* Auth Buttons - Desktop */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden items-center space-x-4 md:flex">
             {!user ? (
               <>
                 <Link
-                  to={'/login'}
-                  className="px-6 py-2 text-primary font-semibold bg-primary-foreground rounded-lg hover:bg-secondary transition-colors duration-200"
+                  to="/login"
+                  className="rounded-lg border border-primary px-6 py-2 font-semibold text-primary transition-colors duration-200 hover:bg-amber-50"
                 >
                   Login
                 </Link>
                 <Link
                   to="/signup"
-                  className="px-6 py-2 text-primary-foreground font-semibold bg-accent rounded-lg hover:bg-opacity-90 transition-colors duration-200"
+                  className="rounded-lg bg-primary px-6 py-2 font-semibold text-white transition-colors duration-200 hover:bg-amber-700"
                 >
                   Sign Up
                 </Link>
@@ -76,56 +70,65 @@ export default function Navbar() {
             ) : (
               <>
                 {isAdmin ? (
-                  <Link to="/admin" className="px-4 py-2 text-primary-foreground font-semibold bg-accent rounded-lg hover:bg-opacity-90 transition-colors duration-200">Admin</Link>
+                  <Link
+                    to="/admin"
+                    className="rounded-lg bg-accent px-4 py-2 font-semibold text-white transition-colors duration-200 hover:bg-teal-800"
+                  >
+                    Admin
+                  </Link>
                 ) : null}
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-semibold text-gray-800">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-sm font-semibold text-primary">
                     {getInitials(user?.username || user?.email)}
                   </div>
-                  <span className="text-sm text-gray-800">{user?.username || user?.email}</span>
+                  <span className="max-w-40 truncate text-sm text-gray-700">{user?.username || user?.email}</span>
                 </div>
-                <button onClick={() => logout()} className="px-4 py-2 text-primary font-semibold bg-primary-foreground rounded-lg hover:bg-secondary transition-colors duration-200">Logout</button>
+                <button
+                  onClick={() => logout()}
+                  className="rounded-lg border border-primary px-4 py-2 font-semibold text-primary transition-colors duration-200 hover:bg-amber-50"
+                >
+                  Logout
+                </button>
               </>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-primary-foreground hover:text-secondary"
+              className="rounded-lg p-2 text-primary transition hover:bg-amber-50"
+              aria-label="Toggle menu"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden pb-4 space-y-2">
+          <div className="space-y-2 border-t border-amber-100 pb-4 pt-4 md:hidden">
             {navItems.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
-                className="block px-4 py-2 text-primary-foreground hover:bg-opacity-80 hover:bg-accent rounded transition-colors duration-200"
+                className="block rounded px-4 py-2 text-gray-700 transition-colors duration-200 hover:bg-amber-50 hover:text-primary"
                 onClick={() => setIsOpen(false)}
               >
                 {item.label}
               </Link>
             ))}
-            <div className="pt-4 border-t border-primary-foreground space-y-2">
+            <div className="space-y-2 border-t border-amber-100 pt-4">
               {!user ? (
                 <>
                   <Link
                     to="/login"
-                    className="block w-full px-4 py-2 text-center text-primary font-semibold bg-primary-foreground rounded-lg"
+                    className="block w-full rounded-lg border border-primary px-4 py-2 text-center font-semibold text-primary"
                     onClick={() => setIsOpen(false)}
                   >
                     Login
                   </Link>
                   <Link
                     to="/signup"
-                    className="block w-full px-4 py-2 text-center text-primary-foreground font-semibold bg-accent rounded-lg"
+                    className="block w-full rounded-lg bg-primary px-4 py-2 text-center font-semibold text-white"
                     onClick={() => setIsOpen(false)}
                   >
                     Sign Up
@@ -134,15 +137,29 @@ export default function Navbar() {
               ) : (
                 <>
                   {isAdmin ? (
-                    <Link to="/admin" className="block w-full px-4 py-2 text-center text-primary font-semibold bg-primary-foreground rounded-lg" onClick={() => setIsOpen(false)}>Admin</Link>
+                    <Link
+                      to="/admin"
+                      className="block w-full rounded-lg bg-accent px-4 py-2 text-center font-semibold text-white"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Admin
+                    </Link>
                   ) : null}
                   <div className="flex items-center gap-2 px-4 py-2">
-                    <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-semibold text-gray-800 mr-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-sm font-semibold text-primary">
                       {getInitials(user?.username || user?.email)}
                     </div>
-                    <div className="text-sm text-gray-800">{user?.username || user?.email}</div>
+                    <div className="truncate text-sm text-gray-700">{user?.username || user?.email}</div>
                   </div>
-                  <button onClick={() => { setIsOpen(false); logout(); }} className="block w-full px-4 py-2 text-center text-primary font-semibold bg-accent rounded-lg">Logout</button>
+                  <button
+                    onClick={() => {
+                      setIsOpen(false);
+                      logout();
+                    }}
+                    className="block w-full rounded-lg border border-primary px-4 py-2 text-center font-semibold text-primary"
+                  >
+                    Logout
+                  </button>
                 </>
               )}
             </div>
