@@ -24,7 +24,7 @@ const formatCurrency = (value) => {
 const luhnCheck = (num) => {
   const digits = num.replace(/\D/g, "");
   let sum = 0;
-  let shouldDouble = false;a
+  let shouldDouble = false;
 
   for (let i = digits.length - 1; i >= 0; i--) {
     let d = parseInt(digits[i], 10);
@@ -82,7 +82,7 @@ const DonationPage = () => {
   // 🔥 ALWAYS use Django backend unless overridden in .env
   const API_BASE =
     import.meta.env.VITE_API_URL?.replace(/\/+$/, "") ||
-    "http://127.0.0.1:8000";
+    "";
 
   // ============================================================
   //                    LOAD SHELTERS
