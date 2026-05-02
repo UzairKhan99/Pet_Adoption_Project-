@@ -1,0 +1,22 @@
+# --- Core Django Packages ---
+Django>=5.0,<6.0
+
+# --- Database Driver ---
+psycopg2-binary>=2.9.9
+
+# --- Environment Variables (.env support) ---
+python-dotenv>=1.0.1
+
+# --- CORS for React Frontend Communication ---
+django-cors-headers>=4.3.1
+
+# --- Tailwind CSS Integration (Optional for Django Admin or Templates) ---
+django-browser-reload>=1.13.0
+django-tailwind>=3.8.0
+
+# --- For Handling JSON & REST-like Endpoints (no DRF needed) ---
+djangorestframework>=3.15.0  # optional but handy for serializers; remove if staying pure Django
+djangorestframework-simplejwt>=5.2.0
+
+# --- Utility & Debugging ---
+django-extensions>=3.2.3

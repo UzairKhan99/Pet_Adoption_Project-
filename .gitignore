@@ -1,0 +1,185 @@
+# General
+.DS_Store
+Thumbs.db
+desktop.ini
+Icon?
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*~.nib
+
+# OS-generated files
+ehthumbs.db
+.Desktop
+.Trashes
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+*.iml
+*.sw?
+*.kate-swp
+
+# Backup / swap files
+*.swp
+*.swo
+*.swn
+*.orig
+*.rej
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.pnp/
+.pnp.js
+.cache/
+.eslintcache
+dist/
+build/
+tmp/
+out/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.python-version
+.env
+.env.local
+.venv/
+venv/
+ENV/
+env/
+pip-log.txt
+pip-delete-this-directory.txt
+htmlcov/
+.coverage
+.coverage.*
+.pytest_cache/
+mypy_cache/
+.pyre/
+*.egg-info/
+dist/
+build/
+eggs/
+
+# Java / Kotlin / Gradle / Maven
+target/
+build/
+out/
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+*.gradle
+.gradle/
+build.gradle.kts.lockfile
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Go
+bin/
+*.exe
+*.dll
+*.so
+*.dylib
+vendor/
+
+# Rust
+target/
+
+# C/C++
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+*.dSYM/
+
+# Ruby
+*.gem
+*.rbc
+.bundle/
+vendor/bundle
+log/
+tmp/
+coverage/
+.rspec
+
+# PHP / Composer
+vendor/
+composer.phar
+/.phpunit.result.cache
+
+# Databases / local data
+*.sqlite3
+*.db
+*.db-journal
+*.sql
+dump.rdb
+
+# Docker
+docker-compose.override.yml
+docker-compose.*.yml
+.Dockerfile.swp
+docker-compose.local.yml
+*.tar
+
+# CI / build artifacts / coverage
+coverage/
+lcov-report/
+.jenkins/
+circleci/
+dist/
+release/
+artifacts/
+
+# Secrets / keys / credentials
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+secrets/
+.env.*.local
+.env.local
+.vault/
+credentials/
+
+# Archives / packages
+*.zip
+*.tar.gz
+*.tgz
+*.rar
+
+# Generated docs
+docs/_build/
+site/
+*.docset
+
+# Misc
+coverage/
+reports/
+.cache/
+*.log.*
+*.pid
+*.seed
+
+# Keep lockfiles (recommended): package-lock.json, yarn.lock, pnpm-lock.yaml, Pipfile.lock, composer.lock
+# If you have any project-specific files to ignore, add them below.
